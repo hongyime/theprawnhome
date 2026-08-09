@@ -25,4 +25,5 @@ npm run dev
 Deployed on Vercel. Auto-deploys from main branch.
 
 ## License
-MIT
+
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
