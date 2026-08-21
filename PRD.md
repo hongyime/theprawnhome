@@ -9,7 +9,8 @@ A personal portfolio / home page for Bryan Seah ("The Prawn"). Features a physic
 - Sticky marquee bar that anchors the transition between hero and content
 - Bento grid layout for portfolio content below the fold
 - Dark/light theme toggle with system preference detection
-- Custom cursor
+- CSS-only custom cursor
+- Discoverable easter eggs for seasonal and keyword triggers
 
 ## Non-Goals
 - CMS-driven content
@@ -65,9 +66,11 @@ Hero is `position: fixed`; content slides over it using `z-index`.
 - Scroll transforms fade/blur/scale/translate the hero as user scrolls down
 
 ### Marquee Bar
-- Horizontal continuous scrolling text bar
+- Hacker News-powered horizontal continuous scrolling text bar
 - Sits at bottom of viewport initially, becomes sticky as content scrolls up
 - Acts as visual separator between hero and content
+- Falls back to Hacker News discussion links when stories have no external URL
+- Respects reduced-motion preference by disabling marquee animation
 
 ### Bento Grid
 - Asymmetric grid of content cards (projects, links, bio, etc.)
@@ -81,7 +84,11 @@ Hero is `position: fixed`; content slides over it using `z-index`.
 
 ### Custom Cursor
 - Replaces default browser cursor
-- CSS/JS-driven position tracking
+- CSS-only cursor image; no JavaScript runs on pointer movement
+
+### Easter Eggs
+- Typing `prawn` outside editable fields reveals PRAWN MODE
+- Local December 25 reveals HOLIDAY MODE with session dismissal
 
 ## Deployment / Run
 ```bash

@@ -10,7 +10,9 @@ A personal portfolio home page featuring a full-screen animated clock hero with 
 - Sticky marquee ticker bar as visual separator between hero and content
 - Bento grid portfolio layout
 - Dark/light/system theme with OS preference sync + manual toggle
-- Custom cursor
+- CSS-only custom cursor with no pointer-movement script
+- Hacker News ticker with reduced-motion fallback
+- Easter eggs for `prawn` and local December 25
 
 ## Tech Stack
 React + TypeScript + Vite + Tailwind CSS + Framer Motion
