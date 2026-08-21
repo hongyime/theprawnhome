@@ -8,7 +8,7 @@ export interface ThemeContextType {
 export interface HackerNewsStory {
   id: number;
   title: string;
-  url: string;
+  url?: string;
   score: number;
   by: string;
 }
