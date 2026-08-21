@@ -12,6 +12,8 @@ export const ThemeContext = React.createContext<ThemeContextType>({
   toggleTheme: () => {},
 });
 
+const isChristmasDate = (date: Date) => date.getMonth() === 11 && date.getDate() === 25;
+
 const App: React.FC = () => {
   // Initialize theme based on system preference
   const [theme, setTheme] = useState<Theme>(() => {
@@ -24,6 +26,8 @@ const App: React.FC = () => {
   // State to trigger physics explosion on time change
   const [timePulse, setTimePulse] = useState(0);
   const [isSecretEggVisible, setIsSecretEggVisible] = useState(false);
+  const [isChristmas, setIsChristmas] = useState(() => isChristmasDate(new Date()));
+  const [isChristmasDismissed, setIsChristmasDismissed] = useState(false);
   const secretBufferRef = useRef('');
   const secretTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -112,9 +116,37 @@ const App: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIsChristmas(isChristmasDate(new Date()));
+    }, 60 * 60 * 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <div className={`min-h-screen font-mono transition-colors duration-300 ${theme === 'dark' ? 'bg-[#111] text-[#E0E0E0]' : 'bg-gray-50 text-black'}`}>
+        {isChristmas && !isChristmasDismissed && (
+          <div className="fixed left-4 top-4 z-[10000] max-w-[calc(100vw-2rem)] border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] p-4">
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setIsChristmasDismissed(true)}
+              className="absolute -top-3 -right-3 w-8 h-8 rounded-full border-2 border-black bg-prawn text-black font-bold leading-none"
+            >
+              x
+            </button>
+            <div className="flex items-center gap-3">
+              <span className="text-5xl leading-none motion-safe:animate-pulse" aria-hidden="true">🎄</span>
+              <div>
+                <div className="font-black text-xl leading-tight">HOLIDAY MODE</div>
+                <div className="text-sm font-bold text-prawn">December 25 signal active.</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {isSecretEggVisible && (
           <div
             role="status"
