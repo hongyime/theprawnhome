@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { HackerNewsStory } from '../../types';
 
 export const MarqueeBar: React.FC = () => {
   const [stories, setStories] = useState<HackerNewsStory[]>([]);
   const [loading, setLoading] = useState(true);
-  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -71,22 +69,14 @@ export const MarqueeBar: React.FC = () => {
       score: 0,
       by: 'system',
     }];
-  const marqueeStories = shouldReduceMotion ? visibleStories : [...visibleStories, ...visibleStories, ...visibleStories];
+  const marqueeStories = [...visibleStories, ...visibleStories];
 
   return (
     <div className="w-full bg-black border-y-2 border-black py-3 overflow-hidden flex relative z-20">
       <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-black to-transparent z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-black to-transparent z-10" />
       
-      <motion.div 
-        className={`flex whitespace-nowrap ${shouldReduceMotion ? 'overflow-x-auto px-12' : ''}`}
-        animate={shouldReduceMotion ? undefined : { x: [0, -4000] }}
-        transition={shouldReduceMotion ? undefined : { 
-          repeat: Infinity, 
-          ease: "linear", 
-          duration: 120, // Slower for more content
-        }}
-      >
+      <div className="hn-marquee-track flex whitespace-nowrap">
         {marqueeStories.map((story, i) => (
           <a 
             key={`${story.id}-${i}`}
@@ -99,7 +89,7 @@ export const MarqueeBar: React.FC = () => {
             {story.title}
           </a>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 };

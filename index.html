@@ -43,6 +43,24 @@
       ::-webkit-scrollbar {
         display: none;
       }
+
+      @keyframes hn-marquee-scroll {
+        from {
+          transform: translate3d(0, 0, 0);
+        }
+        to {
+          transform: translate3d(-50%, 0, 0);
+        }
+      }
+
+      .hn-marquee-track {
+        animation: hn-marquee-scroll 90s linear infinite;
+        will-change: transform;
+      }
+
+      .hn-marquee-track:hover {
+        animation-play-state: paused;
+      }
     </style>
   <script type="importmap">
 {

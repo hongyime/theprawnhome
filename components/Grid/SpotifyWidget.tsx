@@ -58,16 +58,17 @@ export const SpotifyWidget: React.FC = () => {
 
   // Determine what to display
   const useRealData = data && data.isPlaying;
+  const isOffline = !loading && !useRealData;
   
   const display = {
-      image: useRealData ? data.albumArt : "https://picsum.photos/200",
-      title: useRealData ? data.title : "Underwater Love",
-      artist: useRealData ? data.artist : "Prawn Star",
-      isPlaying: useRealData ? true : true, // Mock is always playing
+      image: useRealData ? data.albumArt : null,
+      title: loading ? "Checking Spotify" : useRealData ? data.title : "Spotify is quiet",
+      artist: loading ? "Looking for a live track" : useRealData ? data.artist : "No live listening data right now",
+      isPlaying: Boolean(useRealData),
       progressPercent: useRealData && playbackProgress !== null && data.duration 
           ? (playbackProgress / data.duration) * 100 
           : mockProgress,
-      url: useRealData ? data.url : "#"
+      url: useRealData ? data.url : "https://theprawnfeeds.hong-yi.me"
   };
 
   return (
@@ -78,13 +79,19 @@ export const SpotifyWidget: React.FC = () => {
         animate={{ rotate: display.isPlaying ? 360 : 0 }}
         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       >
-        <a href={display.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-pointer">
+        <a href={display.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-pointer" aria-label={useRealData ? "Open track on Spotify" : "Open feeds"}>
             <div className="w-full h-full rounded-full bg-black border-4 border-prawn overflow-hidden relative">
-                <img 
-                    src={display.image} 
-                    alt="Album Art" 
-                    className="w-full h-full object-cover opacity-80"
-                />
+                {display.image ? (
+                  <img 
+                      src={display.image} 
+                      alt="Album Art" 
+                      className="w-full h-full object-cover opacity-80"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-5xl bg-black">
+                    🎧
+                  </div>
+                )}
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-4 h-4 bg-black rounded-full" />
                 </div>
@@ -111,22 +118,22 @@ export const SpotifyWidget: React.FC = () => {
         {/* Progress Bar */}
         <div className="w-full h-4 bg-gray-200 dark:bg-gray-700 border-2 border-black dark:border-white rounded-full overflow-hidden">
           <motion.div 
-            className="h-full bg-prawn"
+            className={`h-full ${isOffline ? 'bg-gray-400 dark:bg-gray-500' : 'bg-prawn'}`}
             initial={{ width: 0 }}
-            animate={{ width: `${display.progressPercent}%` }}
+            animate={{ width: `${isOffline ? 100 : display.progressPercent}%` }}
             transition={{ ease: "linear", duration: 0.5 }}
           />
         </div>
 
-        {/* Controls (Visual Only for now unless robust API control added) */}
-        <div className="flex justify-center gap-6 text-2xl">
-          <button className="hover:scale-110 active:scale-90 transition-transform dark:text-white">⏮</button>
-          <button 
-            className="hover:scale-110 active:scale-90 transition-transform dark:text-white"
+        <div className="flex justify-center sm:justify-start gap-3">
+          <a
+            href={display.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center border-2 border-black dark:border-white bg-prawn text-black px-3 py-2 text-sm font-bold hover:bg-white dark:hover:bg-black dark:hover:text-white transition-colors"
           >
-            {display.isPlaying ? '⏸' : '▶️'}
-          </button>
-          <button className="hover:scale-110 active:scale-90 transition-transform dark:text-white">⏭</button>
+            {useRealData ? 'OPEN TRACK' : 'OPEN FEEDS'}
+          </a>
         </div>
       </div>
     </Card>

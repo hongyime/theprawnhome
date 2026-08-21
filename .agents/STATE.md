@@ -25,3 +25,6 @@ Next step:
 - Verification: Playwright touch emulation rendered the clock on a 414x896 mobile viewport.
 - Verification: Playwright reduced-motion emulation showed marquee static/scrollable (`overflowX: auto`, `transform: none`, 30 links).
 - Verification: Secret word requires full `prawn`; `praw` does not trigger, `prawn` reveals PRAWN MODE after page focus.
+- Follow-up implemented locally: marquee visibly auto-scrolls even when reduced-motion is enabled, Top Secret reveals easter egg hints, Spotify fallback is useful, and footer whitespace is reduced.
+- Verification: `npm run build` passed.
+- Verification: Playwright targeted checks passed for marquee movement, footer position, Top Secret reveal, and Spotify fallback action.

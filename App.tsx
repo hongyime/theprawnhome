@@ -195,11 +195,11 @@ const App: React.FC = () => {
         {/* Content Layer - Slides over Hero */}
         <div className="relative z-10 bg-inherit">
              <MarqueeBar />
-             <div className="bg-white dark:bg-[#111] min-h-screen border-t-0">
+             <div className="bg-white dark:bg-[#111] border-t-0">
                 <BentoGrid />
                 
                 {/* Footer */}
-                <div className="py-12 text-center border-t-2 border-black dark:border-gray-800">
+                <div className="pt-3 pb-2 text-center border-t-2 border-black dark:border-gray-800">
                     <p className="text-sm opacity-50">BUILT WITH 🦐 POWER</p>
                 </div>
              </div>

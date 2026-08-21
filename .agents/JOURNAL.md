@@ -8,3 +8,4 @@
 - 2026-08-21: Easter egg list updated: on local December 25, HOLIDAY MODE appears and can be dismissed for the session.
 - 2026-08-21: Marquee kept as direct client Hacker News fetch, with reduced-motion static mode and HN discussion URL fallback for stories without external URLs.
 - 2026-08-21: Full easter egg list: `prawn` keyword reveal; local December 25 HOLIDAY MODE seasonal reveal.
+- 2026-08-21: Owner reported marquee was not visibly auto-scrolling, Top Secret did nothing, Spotify fallback was not useful, and footer had too much whitespace; follow-up fix keeps marquee moving, makes Top Secret reveal hints, replaces fake Spotify controls with an honest fallback link, and tightens footer spacing.
