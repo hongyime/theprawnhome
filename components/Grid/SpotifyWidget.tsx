@@ -6,6 +6,7 @@ import { SpotifyData } from '../../types';
 export const SpotifyWidget: React.FC = () => {
   const [data, setData] = useState<SpotifyData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [playbackProgress, setPlaybackProgress] = useState<number | null>(null);
   
   // Mock fallback state for animation
   const [mockProgress, setMockProgress] = useState(30);
@@ -20,13 +21,16 @@ export const SpotifyWidget: React.FC = () => {
           // If we have an error (e.g. missing secrets), we treat it as null/mock
           if (json.error) {
             setData(null);
+            setPlaybackProgress(null);
           } else {
             setData(json);
+            setPlaybackProgress(typeof json.progress === 'number' ? json.progress : null);
           }
         }
       } catch (e) {
         // Fallback to mock on error
         setData(null);
+        setPlaybackProgress(null);
       } finally {
         setLoading(false);
       }
@@ -40,9 +44,11 @@ export const SpotifyWidget: React.FC = () => {
   // Internal timer for smooth progress bar animation
   useEffect(() => {
     const interval = setInterval(() => {
-      if (data && data.isPlaying && data.duration && data.progress) {
-         // Locally increment progress for smoothness between polls
-         // Note: precise sync is hard without websockets, this is a visual approx
+      if (data && data.isPlaying && data.duration) {
+         setPlaybackProgress((progress) => {
+           if (progress === null || !data.duration) return progress;
+           return Math.min(progress + 1000, data.duration);
+         });
       } else {
          setMockProgress((p) => (p >= 100 ? 0 : p + 0.5));
       }
@@ -58,8 +64,8 @@ export const SpotifyWidget: React.FC = () => {
       title: useRealData ? data.title : "Underwater Love",
       artist: useRealData ? data.artist : "Prawn Star",
       isPlaying: useRealData ? true : true, // Mock is always playing
-      progressPercent: useRealData && data.progress && data.duration 
-          ? (data.progress / data.duration) * 100 
+      progressPercent: useRealData && playbackProgress !== null && data.duration 
+          ? (playbackProgress / data.duration) * 100 
           : mockProgress,
       url: useRealData ? data.url : "#"
   };
