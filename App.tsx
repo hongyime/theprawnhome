@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import { BigClock } from './components/Hero/BigClock';
 import { TrinketCanvas } from './components/Hero/TrinketCanvas';
@@ -23,6 +23,9 @@ const App: React.FC = () => {
 
   // State to trigger physics explosion on time change
   const [timePulse, setTimePulse] = useState(0);
+  const [isSecretEggVisible, setIsSecretEggVisible] = useState(false);
+  const secretBufferRef = useRef('');
+  const secretTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { scrollY } = useScroll();
 
@@ -63,10 +66,79 @@ const App: React.FC = () => {
     setTimePulse(Date.now());
   };
 
+  const showSecretEgg = () => {
+    setIsSecretEggVisible(true);
+
+    if (secretTimerRef.current) {
+      clearTimeout(secretTimerRef.current);
+    }
+
+    secretTimerRef.current = setTimeout(() => {
+      setIsSecretEggVisible(false);
+      secretTimerRef.current = null;
+    }, 3600);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const tagName = target?.tagName;
+      const isEditableTarget =
+        target?.isContentEditable ||
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        tagName === 'SELECT';
+
+      if (isEditableTarget || event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) {
+        return;
+      }
+
+      secretBufferRef.current = `${secretBufferRef.current}${event.key.toLowerCase()}`.slice(-5);
+
+      if (secretBufferRef.current === 'prawn') {
+        showSecretEgg();
+        secretBufferRef.current = '';
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+
+      if (secretTimerRef.current) {
+        clearTimeout(secretTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <div className={`min-h-screen font-mono transition-colors duration-300 ${theme === 'dark' ? 'bg-[#111] text-[#E0E0E0]' : 'bg-gray-50 text-black'}`}>
-        
+        {isSecretEggVisible && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="fixed left-4 bottom-4 z-[10000] max-w-[calc(100vw-2rem)] border-2 border-black dark:border-white bg-prawn text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] p-4 motion-safe:animate-bounce"
+          >
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setIsSecretEggVisible(false)}
+              className="absolute -top-3 -right-3 w-8 h-8 rounded-full border-2 border-black bg-white text-black font-bold leading-none"
+            >
+              x
+            </button>
+            <div className="flex items-center gap-3">
+              <span className="text-5xl leading-none" aria-hidden="true">🦐</span>
+              <div>
+                <div className="font-black text-xl leading-tight">PRAWN MODE</div>
+                <div className="text-sm font-bold">Shell signal received.</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Toggle Button - Fixed Top Right */}
         <button 
             onClick={toggleTheme}
