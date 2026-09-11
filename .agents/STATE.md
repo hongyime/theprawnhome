@@ -16,7 +16,11 @@ five assertions against the original API source and the reviewed source was
 restored byte-for-byte. The first accelerated fixture raced local HTTP startup;
 the final fixture fires the captured ten-second callback only after the intended
 network phase is reached. Production build and source type-check pass. Frontend
-assets retain their previous hashes. Hosted checks and production remain pending.
+assets retain their previous hashes. Initial hosted checks passed. The build audit then identified Nano ID 3.3.16
+through Vite/PostCSS. Only its lockfile entry changed to patched 3.3.19; the
+final local build and all ten API checks pass, and npm audit reports zero
+advisories. Frontend asset hashes are unchanged. Final hosted checks and
+production release remain pending in PR #209.
 
 Token reuse is a separate follow-up; no credential/provider/storage migration.
 
