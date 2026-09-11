@@ -1,3 +1,29 @@
+# Active maintenance — 2026-09-11
+
+The owner accepts production maintenance and the existing 30-second display
+refresh. Server token/playback fetches currently have no deadline, including
+response-body reads. Work in this isolated branch preserves the original
+checkout's two preexisting state/journal edits and all frontend behavior.
+
+- [x] Reproduce stalled headers and stalled bodies with synthetic providers.
+- [x] Add one 10-second server deadline covering both upstream requests and bodies.
+- [x] Verify fallback, success, cancellation and timer cleanup; build/type-check.
+- [ ] Commit, pass hosted checks, release and verify production identity/response.
+
+Validation: ten API checks pass, including real local HTTP stalls at token and
+playback headers/body, shared deadline and cleanup. The same final tests fail
+five assertions against the original API source and the reviewed source was
+restored byte-for-byte. The first accelerated fixture raced local HTTP startup;
+the final fixture fires the captured ten-second callback only after the intended
+network phase is reached. Production build and source type-check pass. Frontend
+assets retain their previous hashes. Initial hosted checks passed. The build audit then identified Nano ID 3.3.16
+through Vite/PostCSS. Only its lockfile entry changed to patched 3.3.19; the
+final local build and all ten API checks pass, and npm audit reports zero
+advisories. Frontend asset hashes are unchanged. Final hosted checks and
+production release remain pending in PR #209.
+
+Token reuse is a separate follow-up; no credential/provider/storage migration.
+
 # Agent State
 
 Portfolio upkeep — 2026-09-10:
