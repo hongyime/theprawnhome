@@ -11,3 +11,5 @@
 - 2026-08-21: Owner reported marquee was not visibly auto-scrolling, Top Secret did nothing, Spotify fallback was not useful, and footer had too much whitespace; follow-up fix keeps marquee moving, makes Top Secret reveal hints, replaces fake Spotify controls with an honest fallback link, and tightens footer spacing.
 
 2026-09-10: Accepted portfolio upkeep resumes maintenance. Reproduced 10-second Spotify polling; implementing 30-second visible-tab refresh with request guards while preserving local playback animation. Production verification pending.
+
+- 2026-09-11: Bound the existing Spotify API token/playback sequence and body reads to one ten-second deadline, with quiet timeout fallback and timer cleanup. Ten synthetic provider checks pass; five fail against the original source. Production release verification follows.

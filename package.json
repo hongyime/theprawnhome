@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test:api": "node --test tests/spotify-api.test.mjs",
+    "prebuild": "npm run test:api",
     "build": "vite build",
     "preview": "vite preview"
   },

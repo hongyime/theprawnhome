@@ -53,9 +53,13 @@ export default async function handler(_request: unknown, response: ApiResponse) 
   const basic = btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`);
   const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
   const NOW_PLAYING_ENDPOINT = `https://api.spotify.com/v1/me/player/currently-playing`;
+  // One budget covers token refresh, playback lookup, and both response bodies.
+  const controller = new AbortController();
+  const deadline = setTimeout(() => controller.abort(), 10_000);
 
   try {
     const tokenRes = await fetch(TOKEN_ENDPOINT, {
+      signal: controller.signal,
       method: 'POST',
       headers: {
         Authorization: `Basic ${basic}`,
@@ -74,6 +78,7 @@ export default async function handler(_request: unknown, response: ApiResponse) 
     }
 
     const spotifyRes = await fetch(NOW_PLAYING_ENDPOINT, {
+      signal: controller.signal,
       headers: {
         Authorization: `Bearer ${tokenData.access_token}`,
       },
@@ -107,7 +112,9 @@ export default async function handler(_request: unknown, response: ApiResponse) 
       duration
     });
   } catch (error) {
-    console.error("Spotify API Error:", error);
+    if (!controller.signal.aborted) console.error("Spotify API Error:", error);
     return response.status(200).json({ isPlaying: false });
+  } finally {
+    clearTimeout(deadline);
   }
 }
