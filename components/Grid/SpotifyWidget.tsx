@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../UI/Card';
+import { usePausedMotion } from '../UI/MotionPreferences';
 import { SpotifyData } from '../../types';
 
 export const SpotifyWidget: React.FC = () => {
+  const pauseMotion = usePausedMotion();
   const [data, setData] = useState<SpotifyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [playbackProgress, setPlaybackProgress] = useState<number | null>(null);
@@ -106,8 +108,8 @@ export const SpotifyWidget: React.FC = () => {
       {/* Album Art */}
       <motion.div 
         className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0"
-        animate={{ rotate: display.isPlaying ? 360 : 0 }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        animate={{ rotate: display.isPlaying && !pauseMotion ? 360 : 0 }}
+        transition={{ duration: pauseMotion ? 0 : 10, repeat: pauseMotion ? 0 : Infinity, ease: "linear" }}
       >
         <a href={display.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-pointer" aria-label={useRealData ? "Open track on Spotify" : "Open feeds"}>
             <div className="w-full h-full rounded-full bg-black border-4 border-prawn overflow-hidden relative">
@@ -115,6 +117,8 @@ export const SpotifyWidget: React.FC = () => {
                   <img 
                       src={display.image} 
                       alt="Album Art" 
+                      width={128}
+                      height={128}
                       className="w-full h-full object-cover opacity-80"
                   />
                 ) : (
@@ -151,7 +155,7 @@ export const SpotifyWidget: React.FC = () => {
             className={`h-full ${isOffline ? 'bg-gray-400 dark:bg-gray-500' : 'bg-prawn'}`}
             initial={{ width: 0 }}
             animate={{ width: `${isOffline ? 100 : display.progressPercent}%` }}
-            transition={{ ease: "linear", duration: 0.5 }}
+            transition={{ ease: "linear", duration: pauseMotion ? 0 : 0.5 }}
           />
         </div>
 

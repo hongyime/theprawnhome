@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, motion, MotionConfig, useReducedMotion } from 'framer-motion';
 import { BigClock } from './components/Hero/BigClock';
 import { TrinketCanvas } from './components/Hero/TrinketCanvas';
 import { MarqueeBar } from './components/Marquee/MarqueeBar';
 import { BentoGrid } from './components/Grid/BentoGrid';
 import { ThemeContextType, Theme } from './types';
+
+import { MotionPreferences } from './components/UI/MotionPreferences';
 
 // Theme Context
 export const ThemeContext = React.createContext<ThemeContextType>({
@@ -15,6 +17,10 @@ export const ThemeContext = React.createContext<ThemeContextType>({
 const isChristmasDate = (date: Date) => date.getMonth() === 11 && date.getDate() === 25;
 
 const App: React.FC = () => {
+  const prefersReducedMotion = useReducedMotion();
+  const [motionPaused, setMotionPaused] = useState(false);
+  const pauseMotion = Boolean(prefersReducedMotion || motionPaused);
+
   // Initialize theme based on system preference
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -126,7 +132,10 @@ const App: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className={`min-h-screen font-mono transition-colors duration-300 ${theme === 'dark' ? 'bg-[#111] text-[#E0E0E0]' : 'bg-gray-50 text-black'}`}>
+    <MotionPreferences.Provider value={pauseMotion}>
+    <MotionConfig reducedMotion={pauseMotion ? "always" : "never"}>
+      <div data-motion={pauseMotion ? "paused" : "running"} className={`min-h-screen font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-[#111] text-[#E0E0E0]' : 'bg-white text-black'}`}>
+        <a className="skip-link" href="#main-content">Skip to widgets</a>
         {isChristmas && !isChristmasDismissed && (
           <div className="fixed left-4 top-4 z-[10000] max-w-[calc(100vw-2rem)] border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] p-4">
             <button
@@ -171,20 +180,30 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Toggle Button - Fixed Top Right */}
-        <button 
-            onClick={toggleTheme}
-            className="fixed top-4 right-4 z-50 p-2 border-2 border-black dark:border-white bg-white dark:bg-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:translate-y-1 hover:shadow-none transition-all"
-        >
-            {theme === 'light' ? '🌙' : '☀️'}
-        </button>
+        <div className="fixed top-4 right-4 z-50 flex gap-3">
+          <button type="button" onClick={() => setMotionPaused(value => !value)}
+            aria-pressed={pauseMotion} disabled={Boolean(prefersReducedMotion)}
+            className="border-3 border-black dark:border-white bg-white dark:bg-black px-3 py-2 text-xs font-bold uppercase shadow-brutal disabled:opacity-70">
+            {prefersReducedMotion ? 'Reduced motion' : motionPaused ? 'Resume motion' : 'Pause motion'}
+          </button>
+          <button type="button" onClick={toggleTheme}
+            aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+            className="border-3 border-black dark:border-white bg-white dark:bg-black px-3 py-2 shadow-brutal hover:bg-prawn dark:hover:bg-[#333]">
+            <span aria-hidden="true">{theme === 'light' ? '🌙' : '☀️'}</span>
+          </button>
+        </div>
 
         {/* Hero Section - Fixed Full Screen */}
         <motion.div 
-            style={{ opacity, scale, filter: blur, y }}
+            style={pauseMotion ? undefined : { opacity, scale, filter: blur, y }}
             className="fixed top-0 left-0 w-full h-[100vh] flex flex-col items-center justify-center z-0 pb-[60px]"
         >
-             <TrinketCanvas explodeTrigger={timePulse} />
+             <header className="absolute top-28 left-0 w-full px-4 text-center">
+               <h1 className="text-[7vw] sm:text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
+                 The Prawn <span className="inline-block -skew-x-6 border-3 border-black dark:border-white bg-prawn px-2 text-black shadow-brutal">Home</span>
+               </h1>
+             </header>
+             {!pauseMotion && <div aria-hidden="true"><TrinketCanvas explodeTrigger={timePulse} /></div>}
              <BigClock onMinuteTick={handleMinuteTick} />
         </motion.div>
 
@@ -193,7 +212,7 @@ const App: React.FC = () => {
         <div className="w-full h-[calc(100vh-60px)] pointer-events-none" />
 
         {/* Content Layer - Slides over Hero */}
-        <div className="relative z-10 bg-inherit">
+        <main id="main-content" tabIndex={-1} className="relative z-10 bg-inherit scroll-mt-24">
              <MarqueeBar />
              <div className="bg-white dark:bg-[#111] border-t-0">
                 <BentoGrid />
@@ -203,9 +222,11 @@ const App: React.FC = () => {
                     <p className="text-sm opacity-50">BUILT WITH 🦐 POWER</p>
                 </div>
              </div>
-        </div>
+        </main>
 
       </div>
+    </MotionConfig>
+    </MotionPreferences.Provider>
     </ThemeContext.Provider>
   );
 };

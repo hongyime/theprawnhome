@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  body { margin: 0; font-family: 'Space Grotesk', sans-serif; }
+  a, button, summary { touch-action: manipulation; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 4px;
+  }
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10001;
+    padding: 0.75rem 1rem;
+    border: 3px solid #000;
+    background: #fff;
+    color: #000;
+    font-weight: 700;
+    transform: translateY(calc(-100% - 2rem));
+  }
+  .skip-link:focus { transform: translateY(0); }
+}
+
+/* Accent surfaces stay grey; small accent text needs stronger contrast. */
+.text-prawn { color: #525252; }
+.dark .text-prawn { color: #d4d4d4; }
+
+@keyframes hn-marquee-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.hn-marquee-track { display: flex; width: max-content; animation: hn-marquee-scroll 90s linear infinite; }
+.hn-news-list { display: flex; flex-shrink: 0; white-space: nowrap; }
+.hn-news-list a { margin: 0 2rem; padding: 0.5rem; color: #fff; font-weight: 700; }
+.hn-marquee-track:hover { animation-play-state: paused; }
+.hn-news:focus-within .hn-marquee-track,
+[data-motion='paused'] .hn-marquee-track { animation: none; transform: none; width: 100%; }
+.hn-news:focus-within .hn-news-list,
+[data-motion='paused'] .hn-news-list { flex-wrap: wrap; white-space: normal; max-height: 12rem; overflow-y: auto; width: 100%; }
+.hn-news:focus-within .hn-marquee-copy,
+[data-motion='paused'] .hn-marquee-copy { display: none; }
+.hn-news:focus-within .hn-news-list a,
+[data-motion='paused'] .hn-news-list a { margin: 0 0.5rem; overflow-wrap: anywhere; }
+
+[data-motion='paused'] *,
+[data-motion='paused'] *::before,
+[data-motion='paused'] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

@@ -13,7 +13,8 @@ export const BentoGrid: React.FC = () => {
   const [isSecretOpen, setIsSecretOpen] = useState(false);
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
+    <div className="max-w-7xl mx-auto px-4 py-8 md:py-16">
+      <h2 className="sr-only">Home widgets</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-min">
         {/* Row 1 */}
         <SpotifyWidget />
@@ -42,7 +43,7 @@ export const BentoGrid: React.FC = () => {
               onClick={() => setIsSecretOpen((open) => !open)}
               className="relative z-10 flex flex-col items-center p-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg bg-opacity-50 w-full h-full justify-center text-center"
             >
-              <span className="text-3xl font-black uppercase tracking-widest text-black dark:text-white transform -rotate-6 bg-prawn px-4 py-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <span className="text-3xl font-black uppercase tracking-widest text-black transform -rotate-6 bg-prawn px-4 py-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                   TOP SECRET
               </span>
               {isSecretOpen && (

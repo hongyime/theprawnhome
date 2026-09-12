@@ -6,72 +6,9 @@
     <title>The Prawn Home</title>
     <!-- Prawn Custom Logo Favicon (Black Circle) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              mono: ['"Space Mono"', 'monospace'],
-            },
-            colors: {
-              prawn: '#FF4500',
-              neon: '#39FF14',
-              hotpink: '#FF69B4',
-            },
-            boxShadow: {
-              brutal: '4px 4px 0px 0px #000000',
-              'brutal-hover': '0px 0px 0px 0px #000000',
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Global scrollbar hiding while maintaining functionality */
-      * {
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none;  /* IE 10+ */
-        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext x='2' y='24' font-size='24'%3E%F0%9F%A6%90%3C/text%3E%3C/svg%3E") 10 10, auto !important;
-      }
-      
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      ::-webkit-scrollbar {
-        display: none;
-      }
-
-      @keyframes hn-marquee-scroll {
-        from {
-          transform: translate3d(0, 0, 0);
-        }
-        to {
-          transform: translate3d(-50%, 0, 0);
-        }
-      }
-
-      .hn-marquee-track {
-        animation: hn-marquee-scroll 90s linear infinite;
-        will-change: transform;
-      }
-
-      .hn-marquee-track:hover {
-        animation-play-state: paused;
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25"
-  }
-}
-</script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
   <body>
     <div id="root"></div>
