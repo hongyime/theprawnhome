@@ -1,3 +1,26 @@
+# Token maintenance validation — 2026-09-12
+
+All 28 synthetic API checks, source type checking and the production build pass. The same 28 checks finish with 23 assertion failures against the isolated baseline. A real browser confirms HTTP-200 provider errors activate the existing 60/120-second client backoff, success restores 30-second polling, and ten hidden minutes produce no requests. Built frontend files are byte-for-byte unchanged. Hosted checks and exact production release verification are pending.
+
+The API reuses expiring tokens and coalesces refresh work in bounded temporary memory per warm function instance. One ten-second request deadline covers waiting, retry and bodies. Transient failures back off; allowlisted credential failures stop retries in that instance until configuration changes. HEAD is provider-free. This is not a global rate limit, and real Spotify credential validity/playback and monthly savings remain unverified. No persistent storage or provider configuration changed.
+
+# Resumed token maintenance — 2026-09-12
+
+The previous turn made progress: 26 API checks and the production build/type check passed, token reuse/backoff was implemented, and eight Supabase Storage metadata queries completed. The session stopped during an expanded baseline comparison. Its handle and processes are now gone; the reviewed API has been restored byte-for-byte to the successful build hash. Two concurrency fixture cleanup issues are being corrected before final validation. Production is unchanged.
+
+# Active token maintenance — 2026-09-11
+
+- [x] Reproduce repeated token refreshes, rejected/malformed provider responses and concurrent/timeout behavior with synthetic providers only.
+- [x] Reuse valid tokens with expiry margins, coalesce concurrent work and back off on provider failure without exposing credentials or changing the 30-second display cadence.
+- [x] Verify timeout/cancellation, recovery, response compatibility and bounded memory locally and in hosted checks.
+- [ ] Release the reviewed source, verify the exact Vercel production deployment, preserve original edits and update both portfolio plan formats.
+
+The previous portfolio turn made verified progress: BBCS PR #2 is merged, all 26 deployed Vercel projects were READY at closeout, and PostPlan v38 is published. This task uses synthetic providers; no Spotify OAuth/account flow or credential rotation is requested. Existing frontend cadence and prior ten-second request bound remain requirements.
+
+## Runtime review — 2026-09-11
+
+The token-refresh error group reports two occurrences and was last seen on the current production deployment at 05:36 UTC, coinciding with the earlier bounded API verification. Group counts/first-seen dates can include historical occurrences. The API returns an HTTP 200 quiet fallback, so response-shape checks did not verify playback or refresh-token validity. The grouped message does not establish the provider rejection reason. No additional Spotify account/provider request was made in this review. Token reuse, failure backoff and credential-safe provider diagnostics remain open. Production deployment and public homepage checks pass. The original checkout and its two existing state edits remain untouched.
+
 # Active maintenance — 2026-09-11
 
 The owner accepts production maintenance and the existing 30-second display
@@ -8,7 +31,7 @@ checkout's two preexisting state/journal edits and all frontend behavior.
 - [x] Reproduce stalled headers and stalled bodies with synthetic providers.
 - [x] Add one 10-second server deadline covering both upstream requests and bodies.
 - [x] Verify fallback, success, cancellation and timer cleanup; build/type-check.
-- [ ] Commit, pass hosted checks, release and verify production identity/response.
+- [x] Commit, pass hosted checks, release and verify production identity/response.
 
 Validation: ten API checks pass, including real local HTTP stalls at token and
 playback headers/body, shared deadline and cleanup. The same final tests fail
@@ -19,8 +42,8 @@ network phase is reached. Production build and source type-check pass. Frontend
 assets retain their previous hashes. Initial hosted checks passed. The build audit then identified Nano ID 3.3.16
 through Vite/PostCSS. Only its lockfile entry changed to patched 3.3.19; the
 final local build and all ten API checks pass, and npm audit reports zero
-advisories. Frontend asset hashes are unchanged. Final hosted checks and
-production release remain pending in PR #209.
+advisories. Frontend asset hashes are unchanged. Final hosted checks pass in PR #209. Production merge c0a4c4d57e30c9927900b00f355c0a0f77fe65f8 is READY and all eight HTTP/asset checks pass across both public domains.
+These final handoff notes are intentionally local until the next source release.
 
 Token reuse is a separate follow-up; no credential/provider/storage migration.
 
