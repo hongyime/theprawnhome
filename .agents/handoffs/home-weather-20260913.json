@@ -1,0 +1,25 @@
+{
+  "task": "Prawn Home weather lifecycle and location repair",
+  "base": "d1c8fd8aea574235128de97fc53d83934a4b99f3",
+  "status": "local validation in progress",
+  "task_list": [
+    "Reproduce incorrect fallback and hung requests",
+    "Fix default location, explicit geolocation and bounded request lifecycle",
+    "Validate weather and existing controls",
+    "Pass hosted checks and release to production",
+    "Verify preservation and publish portfolio report"
+  ],
+  "evidence": {
+    "baseline": "Five targeted browser cases fail against the prior source.",
+    "data_tests": "21 weather data checks and 28 existing Spotify API checks pass.",
+    "first_browser_pass": "38 weather cases and six existing Prawn UI scenarios pass.",
+    "current_checks": "Expanded browser suite adds native geolocation, cancelled location and retained-reading location checks."
+  },
+  "constraints": [
+    "All actual weather/music/news provider requests are replaced with synthetic fixtures.",
+    "No database writes, real location use or new Vercel function.",
+    "Keep original checkout changes intact.",
+    "Portfolio scope remains open, including Supabase storage and migration."
+  ],
+  "next": "Verify the expanded suite, commit and release through ordinary PR checks; no existing production change until those pass."
+}
