@@ -16,6 +16,8 @@ export interface HackerNewsStory {
 export interface WeatherData {
   temperature: number;
   weatherCode: number;
+  observedAt: number;
+  isDay: boolean;
 }
 
 export interface SpotifyData {

@@ -1,28 +1,12 @@
 name: Build Check
 
-# COST-OPTIMISED (2026-07-04):
-# - concurrency: cancel-in-progress so a new commit cancels the previous PR build.
-# - Existing paths filter kept (already skips markdown-only edits).
+# Validate the actual app and synthetic providers on every PR and main update.
 on:
   pull_request:
     branches: [main, master]
-    paths:
-      # Only run when JS/TS source or dependency files change
-      - "**.ts"
-      - "**.tsx"
-      - "**.js"
-      - "**.jsx"
-      - "**.vue"
-      - "**.css"
-      - "**.scss"
-      - "package.json"
-      - "package-lock.json"
-      - "pnpm-lock.yaml"
-      - "bun.lockb"
-      - "postcss.config.*"
-      - "tailwind.config.*"
-      - "vite.config.*"
-      - "tsconfig*.json"
+  push:
+    branches: [main, master]
+  workflow_dispatch:
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.ref }}
@@ -34,6 +18,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
 
@@ -63,7 +48,7 @@ jobs:
         if: steps.detect.outputs.has_build == 'true'
         uses: actions/setup-node@v7
         with:
-          node-version: "lts/*"
+          node-version: "24"
           cache: ${{ steps.detect.outputs.pm }}
 
       - name: Install dependencies (npm)
@@ -87,6 +72,31 @@ jobs:
       - name: Run build
         if: steps.detect.outputs.has_build == 'true'
         run: ${{ steps.detect.outputs.pm == 'npm' && 'npm run build' || format('{0} run build', steps.detect.outputs.pm) }}
+
+      - name: Setup Python browser fixtures
+        if: steps.detect.outputs.has_build == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install browser fixture runner
+        if: steps.detect.outputs.has_build == 'true'
+        run: |
+          python -m pip install playwright==1.60.0
+          python -m playwright install --with-deps chromium
+
+      - name: Verify weather loading, cancellation, location and recovery
+        if: steps.detect.outputs.has_build == 'true'
+        run: python tests/weather.py
+
+      - name: Preserve weather browser evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: weather-browser-evidence
+          path: weather-results/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Build succeeded
         if: steps.detect.outputs.has_build == 'true'

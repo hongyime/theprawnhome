@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "test:api": "node --test tests/spotify-api.test.mjs",
-    "prebuild": "npm run test:api",
+    "test:weather": "node --test tests/weather-data.test.mjs",
+    "prebuild": "npm run test:api && npm run test:weather",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },
