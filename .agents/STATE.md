@@ -1,3 +1,12 @@
+# Prawn Home CodeQL maintenance — 2026-09-13
+
+- [x] Verify the live CodeQL settings and previous failed analysis.
+- [ ] Restore one active setup for Actions, JavaScript/TypeScript and Python; validate the PR.
+- [ ] Release and verify new main-branch analyses and the production deployment.
+- [ ] Preserve local notes and publish the updated portfolio report.
+
+The custom workflow was manually disabled while default setup is now unconfigured. The last failure was a duplicate-setup rejection. This change uses the existing advanced workflow as the sole setup, includes workflow-only PR changes and manual dispatch, and uses build-mode none for these interpreted languages. The fixed three-language matrix removes the detector runner. Weekly scheduling and stale-run cancellation remain. No paid security feature or live provider is required. Prawn Home weather PR #212 is already verified in production at c6dc5a8; its earlier pending notes below are historical.
+
 # Prawn Home weather maintenance — 2026-09-13
 
 - [x] Reproduce the deployed location fallback and non-terminating error states with synthetic weather.

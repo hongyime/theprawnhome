@@ -1,0 +1,25 @@
+{
+  "at": "2026-09-12T21:03:31.106449+00:00",
+  "previous_turn_classification": "progress",
+  "base_head": "c6dc5a8e93b7218c08314a3a265d0ea4c5c35da5",
+  "tasks": [
+    {
+      "id": "verify_workflow_configuration",
+      "done": false
+    },
+    {
+      "id": "repair_and_validate_scan_coverage",
+      "done": false
+    },
+    {
+      "id": "release_and_verify_main_scans",
+      "done": false
+    },
+    {
+      "id": "update_portfolio_evidence",
+      "done": false
+    }
+  ],
+  "scope": "Restore Prawn Home CodeQL coverage without paid security features or live provider calls",
+  "portfolio_complete": false
+}
