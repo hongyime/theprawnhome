@@ -15,3 +15,13 @@
 - 2026-09-11: Bound the existing Spotify API token/playback sequence and body reads to one ten-second deadline, with quiet timeout fallback and timer cleanup. Ten synthetic provider checks pass; five fail against the original source. Production release verification follows.
 
 - 2026-09-11: Addressed GHSA-2v37-7h3g-55p8 in the Vite/PostCSS build chain by updating only Nano ID 3.3.16 to 3.3.19. Final local build and ten API checks pass; npm audit reports zero advisories.
+
+- 2026-09-11: PR #209 merged as c0a4c4d57e30c9927900b00f355c0a0f77fe65f8; deployment dpl_DkLYC9QGPYqeicbBhicrDnwfos1n is READY. Ten final hosted API tests and eight production HTTP/asset checks pass. Final handoff notes are local for batching with the next source change.
+
+- 2026-09-11: Current Vercel runtime aggregation shows a Spotify token-refresh failure behind the HTTP 200 quiet fallback. Earlier checks establish response shape, not provider credential validity/playback. No new provider request; token reuse/backoff and safe failure classification remain follow-ups.
+
+- 2026-09-11: Start token reuse/failure-backoff follow-up from verified production c0a4c4d, carrying forward isolated handoff notes and preserving the original checkout. Validate using synthetic providers before release.
+
+- 2026-09-12: Recovered the reviewed token-maintenance source after the interrupted baseline comparison; exact hash matches the prior successful build. Expanded synthetic concurrency validation and release remain pending.
+
+- 2026-09-12: Validated bounded Spotify token reuse, shared refresh, expiry/401 handling, provider backoff and safe diagnostics: 28 API checks, build/type check and synthetic browser backoff/recovery pass. The isolated old-source comparison fails 23 assertions. Frontend hashes and original checkout edits are preserved; release follows existing hosted checks.
