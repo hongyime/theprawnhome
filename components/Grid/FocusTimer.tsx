@@ -50,10 +50,11 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({ onActiveChange }) => {
         colSpan="md:col-span-1" 
         className={`flex flex-col justify-center items-center transition-colors duration-300 ${isActive ? 'border-prawn' : ''}`}
     >
-      <div className={`text-5xl font-bold font-mono mb-6 tracking-wider transition-colors duration-300 ${isActive ? 'text-prawn' : 'dark:text-white'}`}>
+      <div role="timer" aria-label="Focus time remaining" className={`text-5xl font-bold font-mono mb-6 tracking-wider transition-colors duration-300 ${isActive ? 'text-prawn' : 'dark:text-white'}`}>
         {formatTime(timeLeft)}
       </div>
       
+      <p role="status" className="sr-only">{timeLeft === 0 ? "Focus timer finished" : isActive ? "Focus timer running" : "Focus timer paused"}</p>
       <div className="flex gap-4 w-full">
         <motion.button
           onClick={toggleTimer}
@@ -63,7 +64,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({ onActiveChange }) => {
             bg-prawn text-black
           `}
         >
-          {isActive ? 'STOP' : 'START'}
+          {isActive ? 'PAUSE' : 'START'}
         </motion.button>
         
         <motion.button

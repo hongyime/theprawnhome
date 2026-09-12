@@ -69,27 +69,21 @@ export const MarqueeBar: React.FC = () => {
       score: 0,
       by: 'system',
     }];
-  const marqueeStories = [...visibleStories, ...visibleStories];
+  const renderStories = (duplicate: boolean) => (
+    <div className={`hn-news-list${duplicate ? ' hn-marquee-copy' : ''}`} aria-hidden={duplicate || undefined} inert={duplicate || undefined}>
+      {visibleStories.map(story => (
+        <a key={story.id} href={story.url ?? `https://news.ycombinator.com/item?id=${story.id}`}
+          target="_blank" rel="noopener noreferrer" tabIndex={duplicate ? -1 : undefined}
+          className="hover:underline underline-offset-4">
+          <span className="mr-2" aria-hidden="true">★</span>{story.title}
+        </a>
+      ))}
+    </div>
+  );
 
   return (
-    <div className="w-full bg-black border-y-2 border-black py-3 overflow-hidden flex relative z-20">
-      <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-black to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-black to-transparent z-10" />
-      
-      <div className="hn-marquee-track flex whitespace-nowrap">
-        {marqueeStories.map((story, i) => (
-          <a 
-            key={`${story.id}-${i}`}
-            href={story.url ?? `https://news.ycombinator.com/item?id=${story.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mx-8 text-prawn font-bold hover:underline hover:text-white transition-colors"
-          >
-            <span className="text-white mr-2">★</span>
-            {story.title}
-          </a>
-        ))}
-      </div>
-    </div>
+    <nav aria-label="Hacker News" className="hn-news w-full bg-black text-white border-y-3 border-black py-3 overflow-hidden relative z-20">
+      <div className="hn-marquee-track">{renderStories(false)}{renderStories(true)}</div>
+    </nav>
   );
 };

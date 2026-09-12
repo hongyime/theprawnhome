@@ -25,3 +25,5 @@
 - 2026-09-12: Recovered the reviewed token-maintenance source after the interrupted baseline comparison; exact hash matches the prior successful build. Expanded synthetic concurrency validation and release remain pending.
 
 - 2026-09-12: Validated bounded Spotify token reuse, shared refresh, expiry/401 handling, provider backoff and safe diagnostics: 28 API checks, build/type check and synthetic browser backoff/recovery pass. The isolated old-source comparison fails 23 assertions. Frontend hashes and original checkout edits are preserved; release follows existing hosted checks.
+
+- 2026-09-12: Prawn UI maintenance preserves data/provider contracts and adds keyboard/motion controls. Validate built desktop/mobile behavior and exact production release before closing.

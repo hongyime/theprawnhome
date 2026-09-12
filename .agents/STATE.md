@@ -1,3 +1,7 @@
+## Prawn UI maintenance — 2026-09-12
+
+Compiled CSS and the Prawn reference typography/grey surfaces replace browser Tailwind compilation. Native weather navigation, labelled theme controls, skip-to-widgets navigation, keyboard news links and a motion pause/reduced-motion mode are implemented. Build-time type checking now includes Vite CSS declarations. Existing API checks/build and dependency audit pass; six desktop/mobile browser scenarios pass at 1440/390/320 pixels under both motion preferences. Production release remains pending. No API, polling cadence, provider, stored data or collector changed.
+
 # Token maintenance validation — 2026-09-12
 
 All 28 synthetic API checks, source type checking and the production build pass. The same 28 checks finish with 23 assertion failures against the isolated baseline. A real browser confirms HTTP-200 provider errors activate the existing 60/120-second client backoff, success restores 30-second polling, and ten hidden minutes produce no requests. Built frontend files are byte-for-byte unchanged. Hosted checks and exact production release verification are pending.

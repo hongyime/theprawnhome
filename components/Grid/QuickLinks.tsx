@@ -20,11 +20,11 @@ export const QuickLinks: React.FC = () => {
                 flex-grow flex items-center justify-between px-6 py-4
                 border-b-2 border-black last:border-b-0
                 hover:bg-prawn hover:text-black
-                transition-all duration-200 group
+                transition-[color,background-color,transform,opacity] duration-200 group
             `}
           >
             <span className="font-bold text-lg">{link.name}</span>
-            <span className="opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-200">
+            <span className="opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-[color,background-color,transform,opacity] duration-200">
                 →
             </span>
           </a>

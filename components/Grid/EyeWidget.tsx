@@ -1,18 +1,21 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../UI/Card';
+import { usePausedMotion } from '../UI/MotionPreferences';
 
 interface EyeWidgetProps {
   isActive?: boolean;
 }
 
 export const EyeWidget: React.FC<EyeWidgetProps> = ({ isActive = false }) => {
+  const pauseMotion = usePausedMotion();
   const eyeRef = useRef<HTMLDivElement>(null);
   const [pupilPos, setPupilPos] = useState({ x: 0, y: 0 });
   const [isBlinking, setIsBlinking] = useState(false);
 
   // Mouse tracking logic
   useEffect(() => {
+    if (pauseMotion) { setPupilPos({ x: 0, y: 0 }); return; }
     const handleMouseMove = (e: MouseEvent) => {
       if (!eyeRef.current) return;
       
@@ -38,17 +41,19 @@ export const EyeWidget: React.FC<EyeWidgetProps> = ({ isActive = false }) => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [pauseMotion]);
 
   // Random Blink Logic
   useEffect(() => {
+    if (pauseMotion) { setIsBlinking(false); return; }
+    let reopenId: ReturnType<typeof setTimeout>;
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const triggerBlink = () => {
       setIsBlinking(true);
       
       // Open eye after short delay (blink duration)
-      setTimeout(() => {
+      reopenId = setTimeout(() => {
         setIsBlinking(false);
       }, 150);
 
@@ -60,8 +65,8 @@ export const EyeWidget: React.FC<EyeWidgetProps> = ({ isActive = false }) => {
     // Initial random delay
     timeoutId = setTimeout(triggerBlink, Math.random() * 3000 + 1000);
 
-    return () => clearTimeout(timeoutId);
-  }, []);
+    return () => { clearTimeout(timeoutId); clearTimeout(reopenId); };
+  }, [pauseMotion]);
 
   return (
     <Card className={`flex items-center justify-center min-h-[150px] transition-colors duration-500 ${isActive ? 'bg-black' : 'bg-prawn'}`}>
@@ -73,7 +78,7 @@ export const EyeWidget: React.FC<EyeWidgetProps> = ({ isActive = false }) => {
                 initial={{ height: "0%" }}
                 animate={{ height: isBlinking ? "100%" : "0%" }}
                 transition={{ duration: 0.1 }}
-                style={{ backgroundColor: isActive ? '#000000' : '#FF4500' }}
+                style={{ backgroundColor: isActive ? '#000000' : '#a3a3a3' }}
             />
 
             {/* Pupil */}
@@ -84,7 +89,7 @@ export const EyeWidget: React.FC<EyeWidgetProps> = ({ isActive = false }) => {
                     y: pupilPos.y
                 }}
                 animate={{
-                    backgroundColor: isActive ? ["#000000", "#FF4500", "#000000"] : "#000000"
+                    backgroundColor: isActive && !pauseMotion ? ["#000000", "#a3a3a3", "#000000"] : "#000000"
                 }}
                 transition={{
                     backgroundColor: {
