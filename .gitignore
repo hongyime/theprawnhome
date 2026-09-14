@@ -33,6 +33,7 @@ __pycache__/
 .env*
 
 
+
 # AI / editor dot directories (managed via sourcerepo)
 .*
 !.github/

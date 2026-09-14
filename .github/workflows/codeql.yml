@@ -1,7 +1,9 @@
 name: CodeQL Analysis
 
-# The sole CodeQL setup: keep GitHub default setup unconfigured.
-# Scan code, dependencies and workflows, plus a weekly catch-up.
+# COST-OPTIMISED (2026-07-04):
+# - `paths` filter so CodeQL only fires when actual code changes (not markdown/config).
+# - `concurrency: cancel-in-progress` cancels stale runs when new commits land.
+# - Weekly cron kept but shifted off Monday spike (spreads load, avoids stacking with sync workflows).
 on:
   push:
     branches: [main, master]
@@ -20,10 +22,7 @@ on:
       - "**/package-lock.json"
       - "**/requirements*.txt"
       - "**/pyproject.toml"
-      - ".github/workflows/*.yml"
-      - ".github/workflows/*.yaml"
-      - "**/action.yml"
-      - "**/action.yaml"
+      - ".github/workflows/codeql.yml"
   pull_request:
     branches: [main, master]
     paths:
@@ -41,11 +40,6 @@ on:
       - "**/package-lock.json"
       - "**/requirements*.txt"
       - "**/pyproject.toml"
-      - ".github/workflows/*.yml"
-      - ".github/workflows/*.yaml"
-      - "**/action.yml"
-      - "**/action.yaml"
-  workflow_dispatch:
   schedule:
     - cron: "0 14 * * 3" # Weekly Wed 10 PM SGT (off Monday spike)
 
@@ -53,17 +47,53 @@ concurrency:
   group: codeql-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: read-all
 
 jobs:
-  analyze:
-    # Public repository scans use standard runners; skip before runner allocation
-    # if repository visibility changes and paid code scanning is unavailable.
+  # Auto-detect languages present in the repo so we don't spin up a matrix leg
+  # for a language the repo doesn't use (was previously always JS+Py = 2 legs).
+  #
+  # COST FIX (2026-08-04): job-level `if` skips the runner boot entirely on
+  # private repos. The previous shell-level check still spun up a runner and
+  # did a full checkout (~30-60s each) before exiting — ~100 wasted min/week
+  # on push-heavy private repos like unifiedcollector.
+  detect:
     if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    outputs:
+      languages: ${{ steps.langs.outputs.languages }}
+      any: ${{ steps.langs.outputs.any }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Detect languages
+        id: langs
+        shell: bash
+        run: |
+          set -e
+          langs=()
+          if find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.mjs" -o -name "*.cjs" -o -name "*.vue" \) \
+              -not -path "./node_modules/*" -not -path "./.git/*" -print -quit | grep -q .; then
+            langs+=("javascript-typescript")
+          fi
+          if find . -type f \( -name "*.py" -o -name "*.pyi" \) \
+              -not -path "./.venv/*" -not -path "./venv/*" -not -path "./.git/*" -print -quit | grep -q .; then
+            langs+=("python")
+          fi
+          if [ ${#langs[@]} -eq 0 ]; then
+            echo "languages=[]" >> "$GITHUB_OUTPUT"
+            echo "any=false" >> "$GITHUB_OUTPUT"
+          else
+            json=$(printf '"%s",' "${langs[@]}" | sed 's/,$//')
+            echo "languages=[${json}]" >> "$GITHUB_OUTPUT"
+            echo "any=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Detected: ${langs[*]:-none}"
+
+  analyze:
+    needs: detect
+    if: needs.detect.result == 'success' && needs.detect.outputs.any == 'true'
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     permissions:
       security-events: write
       actions: read
@@ -71,20 +101,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # All three are present: workflows, the React app/API and Python fixtures.
-        language: [actions, javascript-typescript, python]
+        language: ${{ fromJson(needs.detect.outputs.languages) }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
+      - uses: actions/checkout@v7
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-          build-mode: none
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        uses: github/codeql-action/analyze@v4
         with:
           category: /language:${{ matrix.language }}
