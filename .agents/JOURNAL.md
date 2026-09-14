@@ -34,3 +34,5 @@
 Reproduce the location-policy/fallback mismatch and weather error lifecycle using synthetic providers. Preserve original edits and existing data; verify the accepted Prawn styling and existing Spotify API checks before production.
 
 2026-09-13: CodeQL gap traced to a disabled advanced workflow with default setup unconfigured; the prior August failure was duplicate setup. Restore a single advanced setup covering Actions, JavaScript/TypeScript and Python, including workflow-only triggers. Use three standard-runner jobs, build-mode none and no dependency install for scans. Existing production runtime and all original local edits remain preserved. Hosted verification is next.
+
+- 2026-09-14: Prepared an isolated focus-timer correction after four real-app synthetic-time failures showed callback-counting drift. Elapsed deadlines preserve sleep/resume and paused time, clear hidden display ticks, and allow restart after completion. Five focused browser cases plus type/build checks pass; no live provider request or production change. Hosted validation and parent review remain.

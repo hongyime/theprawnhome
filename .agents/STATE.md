@@ -1,3 +1,17 @@
+# Prawn Home focus timer candidate — 2026-09-14
+
+- Prepared in an isolated review branch; production is unchanged.
+- The original timer counted callbacks: after ten minutes of browser sleep it
+  showed 24:59 instead of 15:00. Four focused scenarios failed; reset passed.
+- The candidate uses an elapsed-time deadline, retains paused milliseconds,
+  catches up on visibility/focus/pageshow, and stops display ticks while hidden.
+  Starting a finished timer begins a fresh 25-minute session.
+- All five focused browser scenarios pass with synthetic time/provider fixtures.
+  Source type checking, production bundling and whitespace checks pass.
+- Hosted checks and release verification remain for parent review. Existing
+  weather, Spotify and broader UI releases are already recorded below; their
+  full suites were not repeated for this isolated timer correction.
+
 # Prawn Home CodeQL maintenance — 2026-09-13
 
 - [x] Verify the live CodeQL settings and previous failed analysis.
