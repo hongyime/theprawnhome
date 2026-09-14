@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../UI/Card';
 
@@ -9,6 +9,8 @@ interface FocusTimerProps {
 export const FocusTimer: React.FC<FocusTimerProps> = ({ onActiveChange }) => {
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false);
+  const remainingMs = useRef(25 * 60 * 1000);
+  const deadline = useRef<number | null>(null);
 
   // Sync internal state with parent via callback
   useEffect(() => {
@@ -18,23 +20,56 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({ onActiveChange }) => {
   }, [isActive, onActiveChange]);
 
   useEffect(() => {
+    if (!isActive) return;
     let interval: ReturnType<typeof setInterval> | null = null;
-
-    if (isActive && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((seconds) => seconds - 1);
-      }, 1000);
-    } else if (timeLeft === 0) {
-      setIsActive(false);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
+    const stopUpdates = () => {
+      if (interval !== null) clearInterval(interval);
+      interval = null;
     };
-  }, [isActive, timeLeft]);
+    const update = () => {
+      if (deadline.current === null) return;
+      // Browser sleep and throttling can skip callbacks; the deadline still holds.
+      remainingMs.current = Math.max(0, deadline.current - Date.now());
+      setTimeLeft(Math.ceil(remainingMs.current / 1000));
+      if (remainingMs.current === 0) {
+        deadline.current = null;
+        stopUpdates();
+        setIsActive(false);
+      }
+    };
+    const resumeUpdates = () => {
+      stopUpdates();
+      update();
+      if (!document.hidden && deadline.current !== null) interval = setInterval(update, 1000);
+    };
+    document.addEventListener('visibilitychange', resumeUpdates);
+    window.addEventListener('pageshow', resumeUpdates);
+    window.addEventListener('focus', resumeUpdates);
+    resumeUpdates();
+    return () => {
+      stopUpdates();
+      document.removeEventListener('visibilitychange', resumeUpdates);
+      window.removeEventListener('pageshow', resumeUpdates);
+      window.removeEventListener('focus', resumeUpdates);
+    };
+  }, [isActive]);
 
-  const toggleTimer = () => setIsActive(!isActive);
+  const toggleTimer = () => {
+    if (isActive) {
+      remainingMs.current = Math.max(0, (deadline.current ?? Date.now()) - Date.now());
+      deadline.current = null;
+      setTimeLeft(Math.ceil(remainingMs.current / 1000));
+      setIsActive(false);
+    } else {
+      if (remainingMs.current === 0) remainingMs.current = 25 * 60 * 1000;
+      deadline.current = Date.now() + remainingMs.current;
+      setTimeLeft(Math.ceil(remainingMs.current / 1000));
+      setIsActive(true);
+    }
+  };
   const resetTimer = () => {
+    deadline.current = null;
+    remainingMs.current = 25 * 60 * 1000;
     setIsActive(false);
     setTimeLeft(25 * 60);
   };
