@@ -1,7 +1,7 @@
 # PRD: theprawnhome
 
 ## Overview
-A personal portfolio / home page for Bryan Seah ("The Prawn"). Features a physics-based particle hero with a live clock, scroll-driven parallax fade, a marquee ticker bar, and a bento grid content layout. Dark/light theme with system preference detection.
+A personal portfolio / home page for the maintainer ("The Prawn"). Features a physics-based particle hero with a live clock, scroll-driven parallax fade, a marquee ticker bar, and a bento grid content layout. Dark/light theme with system preference detection.
 
 ## Goals
 - Full-screen hero with large live clock and physics particle canvas
@@ -19,7 +19,7 @@ A personal portfolio / home page for Bryan Seah ("The Prawn"). Features a physic
 - Analytics
 
 ## User Stories
-- As a visitor, I want to see Bryan's portfolio with a distinctive animated intro.
+- As a visitor, I want to see the maintainer's portfolio with a distinctive animated intro.
 - As a mobile user, I want a responsive layout that works on all screen sizes.
 
 ## Tech Stack
@@ -100,3 +100,5 @@ npm run dev
 - **Fixed hero + scroll**: hero is `position: fixed` and content slides over it — requires careful `z-index` management and spacer div to push content below viewport
 - **Physics canvas**: particle simulation runs in a `<canvas>` element; performance depends on particle count and device GPU
 - **Minute tick**: `TrinketCanvas` explosion is triggered by parent via `explodeTrigger` prop (timestamp) — decoupled from canvas internals
+
+Machine-specific values in this document use privacy placeholders.
