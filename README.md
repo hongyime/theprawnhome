@@ -1,5 +1,5 @@
 # The Prawn Home
-> Bryan Seah's personal portfolio — animated clock hero, physics canvas, bento grid
+> Personal portfolio — animated clock hero, physics canvas, bento grid
 
 ## What it does
 A personal portfolio home page featuring a full-screen animated clock hero with physics particle explosions (triggered on each minute change), scroll-driven parallax fade, a sticky marquee ticker bar, and a bento grid content layout below the fold. Dark/light theme with system preference detection.
